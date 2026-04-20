@@ -85,7 +85,7 @@ type OpenAIStreamChunk = {
   }
 }
 
-function joinBaseUrl(baseURL: string, path: string): string {
+export function joinBaseUrl(baseURL: string, path: string): string {
   const normalizedBaseUrl = baseURL.replace(/\/$/, '')
   const normalizedPath = path.replace(/^\//, '')
   
