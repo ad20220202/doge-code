@@ -1837,16 +1837,17 @@ async function* queryModel(
               `[claude.ts] gemini compat request has no contents; source=${options.querySource} model=${params.model}`,
             )
           }
+          const geminiConfig = {
+            apiKey: customApiStorage.apiKey || process.env.DOGE_API_KEY || '',
+            baseURL: customApiStorage.baseURL || process.env.ANTHROPIC_BASE_URL || '',
+            headers: clientRequestId
+              ? { [CLIENT_REQUEST_ID_HEADER]: clientRequestId }
+              : undefined,
+            fetch: globalThis.fetch,
+          }
           const reader = await createGeminiCompatStream(
-            {
-              apiKey: process.env.DOGE_API_KEY || '',
-              baseURL: process.env.ANTHROPIC_BASE_URL || '',
-              headers: clientRequestId
-                ? { [CLIENT_REQUEST_ID_HEADER]: clientRequestId }
-                : undefined,
-              fetch: globalThis.fetch,
-            },
-            process.env.ANTHROPIC_MODEL?.trim() || params.model,
+            geminiConfig,
+            customApiStorage.model || process.env.ANTHROPIC_MODEL?.trim() || params.model,
             geminiRequest,
             signal,
           )
@@ -1858,8 +1859,8 @@ async function* queryModel(
         }
         if (compatProvider === 'openai') {
           const compatConfig = {
-            apiKey: process.env.DOGE_API_KEY || '',
-            baseURL: process.env.ANTHROPIC_BASE_URL || '',
+            apiKey: customApiStorage.apiKey || process.env.DOGE_API_KEY || '',
+            baseURL: customApiStorage.baseURL || process.env.ANTHROPIC_BASE_URL || '',
             headers: clientRequestId
               ? { [CLIENT_REQUEST_ID_HEADER]: clientRequestId }
               : undefined,
