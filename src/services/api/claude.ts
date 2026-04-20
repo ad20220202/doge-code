@@ -1820,8 +1820,8 @@ async function* queryModel(
         const customApiStorage = readCustomApiStorage()
         const globalConfig = getGlobalConfig()
         const compatProvider = customApiStorage.provider ?? globalConfig.customApiEndpoint?.provider ?? 'anthropic'
-        if (compatProvider === 'openai') {
-          const openAIRequest = convertAnthropicRequestToOpenAI({
+        if (compatProvider === 'gemini') {
+          const geminiRequest = convertAnthropicRequestToGemini({
             model: params.model,
             system: params.system,
             messages: params.messages,
@@ -1865,6 +1865,7 @@ async function* queryModel(
               : undefined,
             fetch: globalThis.fetch,
           }
+          const openAICompatMode = customApiStorage.openaiCompatMode ?? globalConfig.customApiEndpoint?.openaiCompatMode ?? 'chat_completions'
 
           if (openAICompatMode === 'responses') {
             const responsesRequest = convertAnthropicRequestToOpenAIResponses({
